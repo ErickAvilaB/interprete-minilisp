@@ -2,3 +2,4 @@ Lex.hs
 Parser.hs
 *.hi
 *.o
+mini-lisp
