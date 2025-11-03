@@ -2,7 +2,7 @@ module REPL where
 
 import Lex
 import Desugar
-import Grammars
+import Parser
 import Interp
 
 -- Combinador Z (orden aplicativa / ansiosa)

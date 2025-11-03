@@ -1,6 +1,6 @@
 module Desugar where
 
-import Grammars
+import Parser
 
 -- AST "desugared"
 data ASA

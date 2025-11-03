@@ -1,5 +1,5 @@
 {
-module Grammars where
+module Parser where
 
 import Lex (Token(..),lexer)
 
