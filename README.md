@@ -25,7 +25,8 @@ happy Parser.y    # -> genera Parser.hs
 ## 3) Compilar
 
 ```bash
-ghc -O2 Main.hs MiniLisp.hs Interp.hs Desugar.hs Parser.hs Lex.hs -o mini-lisp
+ghc -O2 MiniLisp.hs Interp.hs Desugar.hs Parser.hs Lex.hs \
+  -main-is REPL.run -o mini-lisp
 ```
 
 ## 4) Ejecutar
