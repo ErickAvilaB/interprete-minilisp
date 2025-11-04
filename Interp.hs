@@ -183,6 +183,3 @@ evalPrimN P.Geq vs = boolChain (>=) vs
 -- Igualdad / desigualdad variádicas (≥ 2), enteros
 evalPrimN P.Eql vs = BooleanV (allEqual (nums vs))
 evalPrimN P.Neq vs = BooleanV (allDistinct (nums vs))
-
--- Cualquier otro caso no debería ocurrir si Parser/Desugar son correctos
-evalPrimN _ _ = runtimeError "primitiva no soportada"
