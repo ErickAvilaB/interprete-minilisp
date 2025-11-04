@@ -34,11 +34,8 @@ saca (PairV a d)        = case toList (PairV a d) of
                             Just xs -> "[" ++ joinWith ", " (map saca xs) ++ "]"
                             Nothing -> "(" ++ saca a ++ " . " ++ saca d ++ ")"
 saca (ClosureV _ _ _)   = "#<procedure>"
--- ExprV, FunV, PrimNV, etc. no deberían imprimirse como resultados finales;
--- si aparecen, mostramos un marcador genérico.
 saca _                  = "#<valor>"
 
--- Detecta si un valor es una lista encadenada de PairV ... NilV y la convierte
 toList :: ASAValues -> Maybe [ASAValues]
 toList NilV                 = Just []
 toList (PairV x xs)         = do
@@ -113,13 +110,11 @@ testNeq     = test "(!= 1 2 3)"            -- #t
 -- Pares y listas
 testPair    = test "(fst (1, #t))"         -- 1
 testList    = test "[1, 2, 3]"             -- [1, 2, 3]
-testHead    = test "(fst [1, 2, 3])"       -- 1
-testTail    = test "(snd [1, 2, 3])"       -- [2, 3] (impreso como lista)
+testHead    = test "(head [1, 2, 3])"      -- 1
+testTail    = test "(tail [1, 2, 3])"      -- [2, 3]
 
 -- let / let* variádicos
--- En let (paralelo), y no puede depender del nuevo x ⇒ debería fallar si lo usa
 testLetPar  = test "(let ((x 3) (y (+ x 1))) (+ x y))"
--- En let* (secuencial), sí puede depender
 testLetSeq  = test "(let* ((x 3) (y (+ x 1))) (+ x y))" -- 7
 
 -- Lambda variádica y aplicación múltiple
@@ -128,6 +123,11 @@ testLambda  = test "((lambda (x y z) (+ x y z)) 1 2 3)" -- 6
 -- if e if0
 testIf      = test "(if #t 1 2)"           -- 1
 testIf0     = test "(if0 0 1 2)"           -- 1
+
+-- cond
+testCond1   = test "(cond ([#f 1]) [else 2])"                          -- 2
+testCond2   = test "(cond ([(< 2 5) 1]) [(> 2 5) 2] [else 3])"         -- 1
+testCond3   = test "(let ((x 0)) (cond ([(< x 0) (- 0 x)]) [(= x 0) 0] [else x]))" -- 0
 
 -- letrec vía Z
 testFact    = test "(letrec (fact (lambda (n) (if (<= n 1) 1 (* n (fact (- n 1)))))) (fact 5))" -- 120

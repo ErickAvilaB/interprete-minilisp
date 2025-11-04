@@ -67,6 +67,10 @@ SASA
   | '(' fst SASA ')'                      { FstS $3 }
   | '(' snd SASA ')'                      { SndS $3 }
 
+  -- head/tail como alias de fst/snd
+  | '(' head SASA ')'                     { FstS $3 }
+  | '(' tail SASA ')'                     { SndS $3 }
+
   -- listas por corchetes
   | '[' ']'                               { ListS [] }
   | '[' ListElems ']'                     { ListS $2 }
@@ -74,6 +78,9 @@ SASA
   -- if / if0
   | '(' if SASA SASA SASA ')'             { IfS  $3 $4 $5 }
   | '(' if0 SASA SASA SASA ')'            { If0S $3 $4 $5 }
+
+  -- cond con cláusulas [guard expr] ... [else expr]
+  | '(' cond CondPairs '[' else SASA ']' ')' { CondS $3 $6 }
 
   -- operadores variádicos aritméticos
   | '(' '+'  SASA SASA MoreS ')'          { PrimNS Plus   ($3:$4:$5) }
@@ -98,7 +105,7 @@ SASA
 
   -- let / let* / letrec
   | '(' let Bindings SASA ')'             { LetManyS $3 $4 }
-  | '(' "let*" Bindings SASA ')'            { LetStarManyS $3 $4 }
+  | '(' "let*" Bindings SASA ')'          { LetStarManyS $3 $4 }
   | '(' letrec '(' var SASA ')' SASA ')'  { LetRecS $4 $5 $7 }
 
   -- lambda variádica y aplicación múltiple
@@ -134,6 +141,11 @@ ListElems
   : SASA                                 { [$1] }
   | SASA ',' ListElems                   { $1 : $3 }
 
+-- Cláusulas de cond (≥1) sin else: [guard expr] ...
+CondPairs
+  : '[' SASA SASA ']'                    { [($2, $3)] }
+  | '[' SASA SASA ']' CondPairs          { ($2, $3) : $5 }
+
 {
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
@@ -160,6 +172,8 @@ data SASA
 
   | If0S SASA SASA SASA
   | IfS  SASA SASA SASA
+
+  | CondS [(SASA, SASA)] SASA -- cond [(g1,e1) ... (gn,en)] elseE
 
   | FunManyS [String] SASA
   | AppManyS SASA [SASA]

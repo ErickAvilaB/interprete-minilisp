@@ -23,13 +23,13 @@ tokens :-
   \)                         { \_ -> TokenPC }
   \[                         { \_ -> TokenBRA }
   \]                         { \_ -> TokenKET }
-  \,                          { \_ -> TokenComma }
+  \,                         { \_ -> TokenComma }
 
   -- operadores aritméticos
   \+                         { \_ -> TokenPlus }
   \-                         { \_ -> TokenMinus }
   \*                         { \_ -> TokenTimes }
-  \/                          { \_ -> TokenDiv }
+  \/                         { \_ -> TokenDiv }
 
   -- comparadores
   ">="                       { \_ -> TokenGeq }
@@ -92,7 +92,7 @@ data Token
   deriving (Show)
 
 normalizeSpaces :: String -> String
-normalizeSpaces = map (\c -> if isSpace c then '\x20' else c)
+normalizeSpaces = map (\c -> if isSpace c && c /= '\n' then '\x20' else c)
 
 lexer :: String -> [Token]
 lexer = alexScanTokens . normalizeSpaces
