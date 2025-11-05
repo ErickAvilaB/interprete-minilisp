@@ -87,11 +87,7 @@ desugar (PrimNS t xs)           = PrimN t (map desugar xs)
 desugar (IfS  c t e)            = If  (desugar c) (desugar t) (desugar e)
 desugar (If0S c t e)            = If0 (desugar c) (desugar t) (desugar e)
 
--- cond [(g1,e1) ... (gn,en)] elseE  ==>  if g1 e1 (if g2 e2 (... elseE))
-desugar (CondS gs elseE)        =
-  let go []           acc = acc
-      go ((g,t):rest) acc = If (desugar g) (desugar t) (go rest acc)
-  in go gs (desugar elseE)
+desugar (CondS c t e) = If  (desugar c) (desugar t) (desugar e)
 
 -- let paralelo: ((lambda (x y ...) body) e1 e2 ...)
 desugar (LetManyS binds body)   =
