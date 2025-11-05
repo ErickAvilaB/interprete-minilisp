@@ -80,7 +80,8 @@ SASA
   | '(' if0 SASA SASA SASA ')'            { If0S $3 $4 $5 }
 
   -- cond
-  | '(' cond '[' SASA SASA ']' '[' else SASA ']' ')' { CondS $4 $5 $9}
+  | '(' cond Clauses '[' else SASA ']' ')' { CondS $3 $6 }
+
 
   -- operadores variádicos aritméticos
   | '(' '+'  SASA SASA MoreS ')'          { PrimNS Plus   ($3:$4:$5) }
@@ -112,6 +113,12 @@ SASA
   | '(' lambda '(' Params ')' SASA ')'    { FunManyS $4 $6 }
   | '(' SASA Args ')'                     { AppManyS $2 $3 }
 
+
+-- Cláusulas de cond: (c1 t1) (c2 t2) ...
+Clauses
+  : '(' SASA SASA ')'                     { [($2,$3)] }
+  | '(' SASA SASA ')' Clauses             { ($2,$3) : $5 }
+
 -- Lista de más argumentos (≥ 0), usada para variádicos con al menos 2
 MoreS
   :                                      { [] }
@@ -141,6 +148,7 @@ ListElems
   : SASA                                 { [$1] }
   | SASA ',' ListElems                   { $1 : $3 }
 
+
 {
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
@@ -168,7 +176,7 @@ data SASA
   | If0S SASA SASA SASA
   | IfS  SASA SASA SASA
 
-  | CondS SASA SASA SASA
+  | CondS [(SASA,SASA)] SASA
 
   | FunManyS [String] SASA
   | AppManyS SASA [SASA]

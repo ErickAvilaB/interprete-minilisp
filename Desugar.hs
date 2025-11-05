@@ -87,7 +87,9 @@ desugar (PrimNS t xs)           = PrimN t (map desugar xs)
 desugar (IfS  c t e)            = If  (desugar c) (desugar t) (desugar e)
 desugar (If0S c t e)            = If0 (desugar c) (desugar t) (desugar e)
 
-desugar (CondS c t e) = If  (desugar c) (desugar t) (desugar e)
+-- [(SASA,SASA)] SASA donde [(c1,t1), (c2,t2), ...] es la lista de condiciones y sus cuerpos, y SASA es el else
+desugar (CondS clauses elseBody) =
+  foldr (\(c,t) acc -> If (desugar c) (desugar t) acc) (desugar elseBody) clauses
 
 -- let paralelo: ((lambda (x y ...) body) e1 e2 ...)
 desugar (LetManyS binds body)   =
