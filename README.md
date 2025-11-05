@@ -37,7 +37,8 @@ ghc -O2 MiniLisp.hs Interp.hs Desugar.hs Parser.hs Lex.hs \
 
 ## Casos de Prueba
 
-A
+Se implementen y documenten expresamente las siguientes funciones de prueba, a fin de demostrar
+la expresividad del lenguaje:
 
 1. Suma de los primeros n números naturales.
 
