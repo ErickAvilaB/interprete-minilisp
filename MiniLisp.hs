@@ -78,7 +78,7 @@ repl = do
 -- Ejecuta REPL
 run :: IO ()
 run = do
-  putStrLn "Mini-Lisp (ansioso) — extendido. Escribe (exit) para salir."
+  putStrLn "Mini-Lisp REPL"
   repl
 
 -- Helper para probar rápidamente expresiones
